@@ -2,14 +2,14 @@ import streamlit as st
 from datetime import date
 
 # إعدادات الواجهة
-st.set_page_config(page_title="الإدارة القانونية - أشرف الحويج", page_icon="⚖️", layout="wide")
+st.set_page_config(page_title="الإدارة القانونية - أشرف ابوزيد المحامي", page_icon="⚖️", layout="wide")
 
 # الترويسة مع أيقونة واتساب بجانب الرقم
 st.markdown(f"""
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <div style="text-align: center; background-color: #f8f9fa; padding: 25px; border-radius: 15px; border-bottom: 5px solid #1E3A8A; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
         <h1 style="color: #1E3A8A; margin: 0;">الإدارة القانونية لشركة إيجيبت ساينتيفك</h1>
-        <h2 style="color: #4B5563; margin: 10px 0;">إعداد المستشار/ أشرف الحويج المحامي</h2>
+        <h2 style="color: #4B5563; margin: 10px 0;">إعداد المستشار/ أشرف ابوزيد المحامي</h2>
         <p style="font-size: 20px; color: #1E3A8A; font-weight: bold;">
              واتساب وموبايل: <a href="https://wa.me/201145134595" style="text-decoration: none; color: #25D366;">
              <i class="fab fa-whatsapp"></i> 01145134595</a>
@@ -79,4 +79,4 @@ else:
         st.write("قائمة الملفات التي وافق الأدمن على عرضها ستظهر هنا.")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>جميع الحقوق محفوظة © المستشار أشرف الحويج 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>جميع الحقوق محفوظة © المستشار أشرف ابوزيد المحامي 2026</p>", unsafe_allow_html=True)
