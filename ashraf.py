@@ -1,82 +1,72 @@
 import streamlit as st
-from datetime import date
+import pandas as pd
+import os # مكتبة للتعامل مع مسارات الملفات
 
-# إعدادات الواجهة
-st.set_page_config(page_title="الإدارة القانونية - أشرف ابوزيد المحامي", page_icon="⚖️", layout="wide")
+st.set_page_config(page_title="بوابة مستندات الشركة", layout="wide")
 
-# الترويسة مع أيقونة واتساب بجانب الرقم
-st.markdown(f"""
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <div style="text-align: center; background-color: #f8f9fa; padding: 25px; border-radius: 15px; border-bottom: 5px solid #1E3A8A; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        <h1 style="color: #1E3A8A; margin: 0;">الإدارة القانونية لشركة إيجيبت ساينتيفك</h1>
-        <h2 style="color: #4B5563; margin: 10px 0;">إعداد المستشار/ أشرف ابوزيد المحامي</h2>
-        <p style="font-size: 20px; color: #1E3A8A; font-weight: bold;">
-             واتساب وموبايل: <a href="https://wa.me/201145134595" style="text-decoration: none; color: #25D366;">
-             <i class="fab fa-whatsapp"></i> 01145134595</a>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+# 1. قاموس ربط الملفات (هنا بنربط الاسم اللي بيظهر للموظف بمكان الملف الفعلي)
+file_paths = {
+    "لائحة العمل": "documents/hr_rules.pdf",
+    "نموذج إجازة": "documents/vacation.pdf",
+    "عقد تسويق": "documents/marketing.pdf",
+    "توكيل عام": "documents/power_of_attorney.pdf"
+}
 
-# إدارة حالة الدخول
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
-    st.session_state['role'] = None
+if 'requests' not in st.session_state:
+    st.session_state.requests = pd.DataFrame(columns=["Employee", "Document", "Status"])
 
-# --- صفحة الدخول والتسجيل ---
-if not st.session_state['logged_in']:
-    tab_login, tab_signup = st.tabs(["🔐 تسجيل الدخول", "📝 طلب حساب جديد (للموظفين)"])
+user_type = st.sidebar.selectbox("تسجيل الدخول كـ:", ["اختر...", "موظف", "مدير النظام"])
+
+if user_type == "موظف":
+    st.title("بوابة طلب المستندات")
+    emp_name = st.text_input("اسم الموظف:")
     
-    with tab_login:
-        col1, col2, col3 = st.columns([1, 1.5, 1])
-        with col2:
-            login_role = st.selectbox("الدخول بصفتك:", ["الأدمن (المستشار أشرف)", "موظف / مستخدم"], key="role_sel")
-            u_name = st.text_input("اسم المستخدم", key="u_name")
-            u_pass = st.text_input("كلمة المرور", type="password", key="u_pass")
+    # نجيب أسماء الأوراق من القاموس اللي عملناه فوق
+    docs_available = list(file_paths.keys())
+    selected_doc = st.selectbox("اختر الورقة المطلوبة:", docs_available)
+    
+    if st.button("طلب تحميل"):
+        if emp_name:
+            new_req = {"Employee": emp_name, "Document": selected_doc, "Status": "Pending"}
+            st.session_state.requests = pd.concat([st.session_state.requests, pd.DataFrame([new_req])], ignore_index=True)
+            st.success("تم إرسال الطلب.. يرجى الانتظار لحين موافقة الإدارة.")
             
-            if st.button("دخول النظام", use_container_width=True):
-                if login_role == "الأدمن (المستشار أشرف)" and u_name == "ASHRAF2026" and u_pass == "Ashraf@2026":
-                    st.session_state['logged_in'] = True
-                    st.session_state['role'] = "admin"
-                    st.rerun()
-                elif login_role == "موظف / مستخدم" and u_name == "user" and u_pass == "1234":
-                    st.session_state['logged_in'] = True
-                    st.session_state['role'] = "user"
-                    st.rerun()
-                else:
-                    st.error("بيانات الدخول غير صحيحة")
-
-    with tab_signup:
-        st.info("قم بتعبئة البيانات التالية لطلب صلاحية الدخول للأرشيف")
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.text_input("الاسم ثلاثي")
-            st.text_input("الرقم القومي")
-            st.date_input("تاريخ الميلاد", min_value=date(1960,1,1))
-        with col_b:
-            st.text_input("رقم الموبايل")
-            st.selectbox("الصفة الوظيفية", ["محاسب", "مهندس", "محامي", "رئيس مجلس الإدارة", "عضو مجلس إدارة"])
-            st.file_uploader("رفع صورة البطاقة الشخصية (وجهين)")
+    if emp_name:
+        st.subheader("حالة طلباتي:")
+        my_requests = st.session_state.requests[st.session_state.requests["Employee"] == emp_name]
         
-        if st.button("إرسال طلب التسجيل للأدمن"):
-            st.success("تم إرسال طلبك بنجاح للمستشار أشرف. سيتم إخطارك عند التفعيل.")
+        for index, row in my_requests.iterrows():
+            if row["Status"] == "Approved":
+                st.write(f"✅ تمت الموافقة على: {row['Document']}")
+                
+                # 2. هنا خطوة الربط والتحميل الفعلي للملف
+                doc_path = file_paths[row['Document']] # تحديد مسار الملف
+                
+                # التأكد إن الملف موجود فعلاً في الفولدر عشان ميحصلش خطأ
+                if os.path.exists(doc_path):
+                    with open(doc_path, "rb") as file:
+                        st.download_button(
+                            label="اضغط هنا لتحميل الملف", 
+                            data=file, 
+                            file_name=f"{row['Document']}.pdf",
+                            mime="application/pdf"
+                        )
+                else:
+                    st.error("الملف غير متوفر حالياً على السيرفر، تواصل مع الإدارة.")
+            else:
+                st.write(f"⏳ قيد الانتظار: {row['Document']}")
 
-# --- الصفحة الرئيسية (بعد الدخول) ---
-else:
-    role = st.session_state['role']
-    st.sidebar.title(f"مرحباً: {'سيادة المستشار' if role == 'admin' else 'أستاذ '}")
-    if st.sidebar.button("تسجيل الخروج"):
-        st.session_state['logged_in'] = False
-        st.rerun()
-
-    if role == "admin":
-        st.title("🛠️ لوحة تحكم الأدمن (صلاحيات كاملة)")
-        # هنا الأدمن يقدر يرفع ويعدل
-        st.file_uploader("ارفع ملفات الشركة الجديدة")
-        st.button("تحديث وتنسيق الأرشيف")
+elif user_type == "مدير النظام":
+    st.title("لوحة تحكم الإدارة")
+    pending_reqs = st.session_state.requests[st.session_state.requests["Status"] == "Pending"]
+    
+    if pending_reqs.empty:
+        st.info("لا توجد طلبات معلقة.")
     else:
-        st.title("📑 أرشيف الموظفين (للاطلاع فقط)")
-        st.text_input("🔍 ابحث عن عقد أو مستند بالاسم...")
-        st.write("قائمة الملفات التي وافق الأدمن على عرضها ستظهر هنا.")
-
-st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>جميع الحقوق محفوظة © المستشار أشرف ابوزيد المحامي 2026</p>", unsafe_allow_html=True)
+        for index, row in pending_reqs.iterrows():
+            col1, col2, col3 = st.columns(3)
+            col1.write(f"الموظف: {row['Employee']}")
+            col2.write(f"الورقة: {row['Document']}")
+            if col3.button("موافقة", key=f"approve_{index}"):
+                st.session_state.requests.at[index, "Status"] = "Approved"
+                st.rerun()
