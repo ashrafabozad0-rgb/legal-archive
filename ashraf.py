@@ -24,8 +24,8 @@ if 'logged_in' not in st.session_state:
 
 # --- صفحة الدخول والتسجيل ---
 if not st.session_state['logged_in']:
-tab_login, tab_signup = st.tabs(["🔐تسجيل الدخول", "📝 طلب حساب جديد "    
-    with tab_login:
+         tab_login, tab_signup = st.tabs(["🔐تسجيل الدخول", "📝 طلب حساب جديد "])
+with tab_login:
         col1, col2, col3 = st.columns([1, 1.5, 1])
         with col2:
             login_role = st.selectbox("الدخول بصفتك:", ["الأدمن (المستشار أشرف)", "مستخدم"], key="role_sel")
