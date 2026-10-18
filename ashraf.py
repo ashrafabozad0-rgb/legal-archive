@@ -29,7 +29,7 @@ if not st.session_state['logged_in']:
     with tab_login:
         col1, col2, col3 = st.columns([1, 1.5, 1])
         with col2:
-            login_role = st.selectbox("الدخول بصفتك:", ["الأدمن (المستشار أشرف)", "موظف / مستخدم"], key="role_sel")
+            login_role = st.selectbox("الدخول بصفتك:", ["الأدمن (المستشار أشرف)", "مستخدم"], key="role_sel")
             u_name = st.text_input("اسم المستخدم", key="u_name")
             u_pass = st.text_input("كلمة المرور", type="password", key="u_pass")
             
