@@ -9,7 +9,7 @@ st.markdown(f"""
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <div style="text-align: center; background-color: #f8f9fa; padding: 25px; border-radius: 15px; border-bottom: 5px solid #1E3A8A; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
         <h1 style="color: #1E3A8A; margin: 0;">أشرف ابوزيد المحامي</h1>
-        <h2 style="color: #4B5563; margin: 10px 0;">إعداد المستشار/ أشرف ابوزيدالمحامي</h2>
+        <h2 style="color: #4B5563; margin: 10px 0;">إعداد المستشار/ أشرف ابوزيد المحامي</h2>
         <p style="font-size: 20px; color: #1E3A8A; font-weight: bold;">
              واتساب وموبايل: <a href="https://wa.me/201145134595" style="text-decoration: none; color: #25D366;">
              <i class="fab fa-whatsapp"></i> 01145134595</a>
@@ -52,7 +52,7 @@ if not st.session_state['logged_in']:
             st.text_input("الاسم ثلاثي")
             st.text_input("الرقم القومي")
         with col_b:
-            st.text_input("رقم الموبايل"))
+            st.text_input("رقم الموبايل")
             st.file_uploader("رفع صورة البطاقة الشخصية (وجهين)")
         
         if st.button("إرسال طلب التسجيل للأدمن"):
