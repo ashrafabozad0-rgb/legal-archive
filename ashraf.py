@@ -63,7 +63,7 @@ if not st.session_state['logged_in']:
 # --- الصفحة الرئيسية (بعد الدخول) ---
 else:
     role = st.session_state['role']
-    st.sidebar.title(f"مرحباً: {'سيادة المستشار' if role == 'admin' else 'أستاذ موظف'}")
+    st.sidebar.title(f"مرحباً: {'سيادة المستشار' if role == 'admin' else 'أستاذ '}")
     if st.sidebar.button("تسجيل الخروج"):
         st.session_state['logged_in'] = False
         st.rerun()
